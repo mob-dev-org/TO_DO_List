@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
         fontSize: 45,
         backgroundColor: 'red',
         width: "100%",
-        height:90,
+        padding:8,
         textAlign: 'center',
         alignItems: 'center',
     },
@@ -82,13 +82,12 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     header: {
-        flex: 7,
+        
         backgroundColor: '#fa1',
         // alignItems: 'center',
     },
     page: {
         flex: 1,
-
         backgroundColor: 'blue',
     },
     body: {
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
     },
     footer:{
         backgroundColor:"#303050",
-        height:90
+     
         
     }
 });
