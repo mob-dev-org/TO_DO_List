@@ -1,84 +1,95 @@
-import * as WebBrowser from "expo-web-browser";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import * as WebBrowser from 'expo-web-browser';
+import { StyleSheet, TouchableOpacity, TextInput, Button, Pressable } from 'react-native';
+import { useState } from 'react';
+import Colors from '../constants/Colors';
+import { MonoText } from './StyledText';
+import { Text, View } from './Themed';
 
-import Colors from "../constants/Colors";
-import { MonoText } from "./StyledText";
-import { Text, View } from "./Themed";
+export default function EditScreenInfo() {
+    const [text, setText] = useState<string>('');
+    const [items, setItems] = useState<string[]>([]);
 
-export default function EditScreenInfo({ path }: { path: string }) {
-  return (
-    <View>
-      <View style={styles.getStartedContainer}>
-        <Text
-          style={styles.getStartedText}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)"
-        >
-          Open up the code for this screen:
-        </Text>
+    const submit = () => {
+        // item.push(text);
+        setItems([...items, text]);
+        setText('');
+    };
 
-        <View
-          style={[styles.codeHighlightContainer, styles.homeScreenFilename]}
-          darkColor="rgba(255,255,255,0.05)"
-          lightColor="rgba(0,0,0,0.05)"
-        >
-          <MonoText>{path}</MonoText>
+    return (
+        <View style={styles.body}>
+            <View style={styles.header}>
+                <TextInput
+                    style={styles.textInput}
+                    placeholder="Write something"
+                    value={text}
+                    // onChange={(e) => setText(e.nativeEvent.text)}
+                    // onChangeText={setText} ispravan - najkraca verzije
+                    // onChangeText={(text) => setText(text)} ispravan - srednje kratka verzija
+                    onChangeText={(text) => {
+                        console.log(text);
+                        setText(text); // ispravan najduza verzija
+                    }}
+                />
+
+                <Pressable style={[{ alignItems: 'flex-end', marginEnd: 20 }]} onPress={submit}>
+                    <Text style={styles.button}>+</Text>
+                </Pressable>
+            </View>
+            <View style={styles.footer}>
+                {items.map((text, index) => (
+                    <Text style={styles.textf}>{text}</Text>
+                ))}
+            </View>
         </View>
-
-        <Text
-          style={styles.getStartedText}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)"
-        >
-          Change any of the text, save the file, and your app will automatically
-          update.
-        </Text>
-      </View>
-
-      <View style={styles.helpContainer}>
-        <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-          <Text style={styles.helpLinkText} lightColor={Colors.light.tint}>
-            Tap here if your app doesn't automatically update after making
-            changes
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
-
-function handleHelpPress() {
-  WebBrowser.openBrowserAsync(
-    "https://docs.expo.io/get-started/create-a-new-app/#opening-the-app-on-your-phonetablet"
-  );
+    );
 }
 
 const styles = StyleSheet.create({
-  getStartedContainer: {
-    alignItems: "center",
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightContainer: {
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    lineHeight: 24,
-    textAlign: "center",
-  },
-  helpContainer: {
-    marginTop: 15,
-    marginHorizontal: 20,
-    alignItems: "center",
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    textAlign: "center",
-  },
+    button: {
+        borderRadius: 100,
+        fontSize: 45,
+        backgroundColor: 'red',
+        width: 60,
+        height: 60,
+        textAlign: 'center',
+        alignItems: 'flex-end',
+    },
+    textInput: {
+        width: 350,
+        height: 35,
+        borderRadius: 20,
+        backgroundColor: 'white',
+        paddingLeft: 8,
+        paddingRight: 8,
+        margin: 20,
+    },
+    text: {
+        fontSize: 40,
+        backgroundColor: 'blue',
+        textAlign: 'right',
+        color: 'white',
+        margin: 20,
+        padding: 10,
+    },
+    textf: {
+        fontSize: 25,
+        backgroundColor: '#0f0',
+        textAlign: 'right',
+        margin: 20,
+        padding: 10,
+    },
+    header: {
+        flex: 7,
+        backgroundColor: '#fa1',
+        // alignItems: 'center',
+    },
+    body: {
+        flex: 1,
+
+        backgroundColor: 'blue',
+    },
+    footer: {
+        flex: 25,
+        backgroundColor: '#cf0',
+    },
 });
