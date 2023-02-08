@@ -71,8 +71,9 @@ const styles = StyleSheet.create({
         margin: 20,
     },
     taskPerent:{
-        justifyContent:"space-between",
-        flexDirection:"row"
+        
+        flexDirection:"row",
+        backgroundColor:"blue",
     },
     text: {
         fontSize: 40,
@@ -84,9 +85,8 @@ const styles = StyleSheet.create({
     },
     taskText: {
         fontSize: 25,
-        backgroundColor: '#0f0',
         textAlign: 'right',
-        
+        flex:1,
         padding: 10,
     },
     header: {
