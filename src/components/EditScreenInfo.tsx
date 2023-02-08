@@ -35,7 +35,11 @@ export default function EditScreenInfo() {
             </View>
             <View style={styles.body}>
                 {items.map((text, index) => (
+                    <View>
                     <Text style={styles.taskText}>{text}</Text>
+                    <Button title='X' color={"red"}/>
+                    <Button title='Edit' color={"red"}/>
+                    </View>
                 ))}
             </View>
             <View style={styles.footer}>
