@@ -1,5 +1,5 @@
 import * as WebBrowser from 'expo-web-browser';
-import { StyleSheet, TouchableOpacity, TextInput, Button, Pressable } from 'react-native';
+import { StyleSheet, TouchableOpacity, TextInput, Button, Pressable, GestureResponderEvent } from 'react-native';
 import { useState } from 'react';
 import Colors from '../constants/Colors';
 import { MonoText } from './StyledText';
@@ -10,10 +10,37 @@ export default function EditScreenInfo() {
     const [text, setText] = useState<string>('');
     const [items, setItems] = useState<string[]>([]);
 
-    const submit = () => {
-        // item.push(text);
-        setItems([...items, text]);
-        setText('');
+    const clear = () => setItems([]);
+
+    const clearTask = (index: number) => {
+        console.log('proba', index);
+        items.splice(index, 1);
+        setItems([...items]);
+    };
+
+    const submit = () =>
+        // event: GestureResponderEvent
+        {
+            // item.push(text);
+            // console.log('pageX', event.nativeEvent.pageX);
+            setItems([...items, text]);
+            setText('');
+        };
+
+    const renderItem = (task: string, index: number) => {
+        console.log('task, index', task, index);
+
+        return (
+            <View style={styles.taskPerent}>
+                <Text style={styles.taskText}>{task}</Text>
+                <Pressable style={styles.itemButton}>
+                    <Entypo name="edit" size={24} color="black" />
+                </Pressable>
+                <Pressable style={styles.itemButton} onPress={() => clearTask(index)}>
+                    <MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />
+                </Pressable>
+            </View>
+        );
     };
 
     return (
@@ -27,26 +54,44 @@ export default function EditScreenInfo() {
                     // onChangeText={setText} ispravan - najkraca verzije
                     // onChangeText={(text) => setText(text)} ispravan - srednje kratka verzija
                     onChangeText={(text) => {
-                        console.log(text);
+                        // console.log(text);
                         setText(text); // ispravan najduza verzija
                     }}
                 />
             </View>
             <View style={styles.body}>
-                {items.map((text, index) => (
-                    <View style={styles.taskPerent}>
-                        <Text style={styles.taskText}>{text}</Text>
-                        <Pressable style={styles.itemButton}>
-                            <Entypo name="edit" size={24} color="black" />
-                        </Pressable>
-                        <Pressable style={styles.itemButton}>
-                            <MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />
-                        </Pressable>
-                    </View>
-                ))}
+                {items.map((task: string, index: number) => {
+                    console.log('task, index', task, index);
+
+                    return (
+                        <View style={styles.taskPerent}>
+                            <Text style={styles.taskText}>{task}</Text>
+                            <Pressable style={styles.itemButton}>
+                                <Entypo name="edit" size={24} color="black" />
+                            </Pressable>
+                            <Pressable style={styles.itemButton} onPress={() => clearTask(index)}>
+                                <MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />
+                            </Pressable>
+                        </View>
+                    );
+                })}
+                {/* {items.map((value: string, index: number) => renderItem(value, index))} */}
+                {/* {items.map(renderItem)} syntactic sugar */}
+
+                <Pressable
+                    style={styles.clear}
+                    onPress={clear} // syntactic sugar
+                >
+                    <Text style={styles.ClearText}>Clear</Text>
+                    <MaterialCommunityIcons name="delete-alert" size={44} color="black" />
+                </Pressable>
             </View>
             <View style={styles.footer}>
-                <Pressable style={[{ alignItems: 'flex-end' }]} onPress={submit}>
+                <Pressable
+                    style={[{ alignItems: 'flex-end' }]}
+                    onPress={submit}
+                    // onPress={(event) => submit(event)} // These 2 function calls are the same
+                >
                     <Text style={styles.button}>
                         Add
                         <AntDesign name="pluscircleo" size={24} color="black" />
@@ -109,11 +154,26 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'blue',
     },
+    clear: {
+        width: 200,
+        color: 'red',
+        borderRadius: 32,
+        flexDirection: 'row',
+        borderWidth: 1,
+        borderColor: 'black',
+        justifyContent: 'center',
+        marginTop: 8,
+    },
     body: {
         flex: 25,
         backgroundColor: '#cf0',
+        alignItems: 'center',
     },
     footer: {
         backgroundColor: '#303050',
+    },
+    ClearText: {
+        fontSize: 32,
+        fontWeight: 'bold',
     },
 });
