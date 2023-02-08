@@ -35,7 +35,7 @@ export default function EditScreenInfo() {
             </View>
             <View style={styles.body}>
                 {items.map((text, index) => (
-                    <View>
+                    <View style={styles.taskPerent}>
                     <Text style={styles.taskText}>{text}</Text>
                     <Button title='X' color={"red"}/>
                     <Button title='Edit' color={"red"}/>
@@ -70,6 +70,10 @@ const styles = StyleSheet.create({
         paddingRight: 8,
         margin: 20,
     },
+    taskPerent:{
+        justifyContent:"space-between",
+        flexDirection:"row"
+    },
     text: {
         fontSize: 40,
         backgroundColor: 'blue',
@@ -82,7 +86,7 @@ const styles = StyleSheet.create({
         fontSize: 25,
         backgroundColor: '#0f0',
         textAlign: 'right',
-        margin: 20,
+        
         padding: 10,
     },
     header: {
