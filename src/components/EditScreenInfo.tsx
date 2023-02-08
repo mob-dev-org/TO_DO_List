@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Colors from '../constants/Colors';
 import { MonoText } from './StyledText';
 import { Text, View } from './Themed';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function EditScreenInfo() {
     const [text, setText] = useState<string>('');
@@ -31,20 +31,26 @@ export default function EditScreenInfo() {
                         setText(text); // ispravan najduza verzija
                     }}
                 />
-
             </View>
             <View style={styles.body}>
                 {items.map((text, index) => (
                     <View style={styles.taskPerent}>
-                    <Text style={styles.taskText}>{text}</Text>
-                    <Button title='<MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />' color={"red"}/>
-                    <Button title='Edit' color={"red"}/>
+                        <Text style={styles.taskText}>{text}</Text>
+                        <Pressable style={styles.itemButton}>
+                            <Entypo name="edit" size={24} color="black" />
+                        </Pressable>
+                        <Pressable style={styles.itemButton}>
+                            <MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />
+                        </Pressable>
                     </View>
                 ))}
             </View>
             <View style={styles.footer}>
-                <Pressable style={[{ alignItems: 'flex-end', }]} onPress={submit}>
-                    <Text style={styles.button}>Add<AntDesign name="pluscircleo" size={24} color="black" /></Text>
+                <Pressable style={[{ alignItems: 'flex-end' }]} onPress={submit}>
+                    <Text style={styles.button}>
+                        Add
+                        <AntDesign name="pluscircleo" size={24} color="black" />
+                    </Text>
                 </Pressable>
             </View>
         </View>
@@ -52,12 +58,19 @@ export default function EditScreenInfo() {
 }
 
 const styles = StyleSheet.create({
+    itemButton: {
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 16,
+        marginLeft: 8,
+    },
+
     button: {
-       
         fontSize: 45,
         backgroundColor: 'red',
-        width: "100%",
-        padding:8,
+        width: '100%',
+        padding: 8,
         textAlign: 'center',
         alignItems: 'center',
     },
@@ -70,10 +83,9 @@ const styles = StyleSheet.create({
         paddingRight: 8,
         margin: 20,
     },
-    taskPerent:{
-        margin:8,
-        flexDirection:"row",
-        backgroundColor:"blue",
+    taskPerent: {
+        margin: 8,
+        flexDirection: 'row',
     },
     text: {
         fontSize: 40,
@@ -86,11 +98,10 @@ const styles = StyleSheet.create({
     taskText: {
         fontSize: 25,
         textAlign: 'left',
-        flex:1,
+        flex: 1,
         padding: 10,
     },
     header: {
-        
         backgroundColor: '#fa1',
         // alignItems: 'center',
     },
@@ -102,9 +113,7 @@ const styles = StyleSheet.create({
         flex: 25,
         backgroundColor: '#cf0',
     },
-    footer:{
-        backgroundColor:"#303050",
-     
-        
-    }
+    footer: {
+        backgroundColor: '#303050',
+    },
 });
