@@ -37,7 +37,7 @@ export default function EditScreenInfo() {
                 {items.map((text, index) => (
                     <View style={styles.taskPerent}>
                     <Text style={styles.taskText}>{text}</Text>
-                    <Button title='X' color={"red"}/>
+                    <Button title='<MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />' color={"red"}/>
                     <Button title='Edit' color={"red"}/>
                     </View>
                 ))}
@@ -71,13 +71,13 @@ const styles = StyleSheet.create({
         margin: 20,
     },
     taskPerent:{
-        
+        margin:8,
         flexDirection:"row",
         backgroundColor:"blue",
     },
     text: {
         fontSize: 40,
-        backgroundColor: 'blue',
+        backgroundColor: 'white',
         textAlign: 'right',
         color: 'white',
         margin: 20,
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     },
     taskText: {
         fontSize: 25,
-        textAlign: 'right',
+        textAlign: 'left',
         flex:1,
         padding: 10,
     },
