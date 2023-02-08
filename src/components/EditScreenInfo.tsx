@@ -39,7 +39,7 @@ export default function EditScreenInfo() {
                 ))}
             </View>
             <View style={styles.footer}>
-                <Pressable style={[{ alignItems: 'flex-end', marginEnd: 20 }]} onPress={submit}>
+                <Pressable style={[{ alignItems: 'flex-end', }]} onPress={submit}>
                     <Text style={styles.button}>Add<AntDesign name="pluscircleo" size={24} color="black" /></Text>
                 </Pressable>
             </View>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         width: "100%",
         height:90,
         textAlign: 'center',
-        alignItems: 'flex-end',
+        alignItems: 'center',
     },
     textInput: {
         width: 350,
