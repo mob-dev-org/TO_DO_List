@@ -49,11 +49,11 @@ export default function EditScreenInfo() {
 
 const styles = StyleSheet.create({
     button: {
-        borderRadius: 100,
+       
         fontSize: 45,
         backgroundColor: 'red',
-        width: 60,
-        height: 60,
+        width: "100%",
+        height:90,
         textAlign: 'center',
         alignItems: 'flex-end',
     },
