@@ -16,7 +16,7 @@ export default function EditScreenInfo() {
     };
 
     return (
-        <View style={styles.body}>
+        <View style={styles.page}>
             <View style={styles.header}>
                 <TextInput
                     style={styles.textInput}
@@ -37,7 +37,7 @@ export default function EditScreenInfo() {
             </View>
             <View style={styles.footer}>
                 {items.map((text, index) => (
-                    <Text style={styles.textf}>{text}</Text>
+                    <Text style={styles.body}>{text}</Text>
                 ))}
             </View>
         </View>
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         margin: 20,
         padding: 10,
     },
-    textf: {
+    body: {
         fontSize: 25,
         backgroundColor: '#0f0',
         textAlign: 'right',
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fa1',
         // alignItems: 'center',
     },
-    body: {
+    page: {
         flex: 1,
 
         backgroundColor: 'blue',
