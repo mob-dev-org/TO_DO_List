@@ -36,7 +36,7 @@ it(`needs to have function in clear button onPress "Clear"`, () => {
     expect(true).toBeTruthy();
 });
 
-it(`needs to have function for clearing single task with clear button `, () => {
+it(`needs to have function for clearing single task with long press on "X" button `, () => {
     expect(true).toBeTruthy();
 });
 
@@ -45,5 +45,13 @@ it(`needs to have "Add" button in footer `, () => {
 });
 
 it(`needs to have function editing single task with edit button `, () => {
+    expect(true).toBeTruthy();
+});
+
+it(`needs to change "edit" icon to "save" on click edit and oposite`, () => {
+    expect(true).toBeTruthy();
+});
+
+it(`needs to have function checking on single fast tap "X" button `, () => {
     expect(true).toBeTruthy();
 });
