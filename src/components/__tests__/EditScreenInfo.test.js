@@ -11,13 +11,10 @@ it(`need to have input for headar `, () => {
     expect(true).toBeTruthy();
 });
 
-it(`needs to placeholder "Task description" and save text as you type`, () => {
+it(`needs to placeholder "Write something" and save text as you type`, () => {
     expect(true).toBeTruthy();
 });
 
-it(`needs to have button for header so you can confirm and add task`, () => {
-    expect(true).toBeTruthy();
-});
 
 it(`needs to have task after submiting inputed text`, () => {
     expect(true).toBeTruthy();
@@ -35,10 +32,18 @@ it(`needs to have clear button in body`, () => {
     expect(true).toBeTruthy();
 });
 
-it(`needs to have function in clear button onPress`, () => {
+it(`needs to have function in clear button onPress "Clear"`, () => {
     expect(true).toBeTruthy();
 });
 
 it(`needs to have function for clearing single task with clear button `, () => {
+    expect(true).toBeTruthy();
+});
+
+it(`needs to have "Add" button in footer `, () => {
+    expect(true).toBeTruthy();
+});
+
+it(`needs to have function editing single task with edit button `, () => {
     expect(true).toBeTruthy();
 });

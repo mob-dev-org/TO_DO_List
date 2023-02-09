@@ -8,14 +8,15 @@ import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function EditScreenInfo() {
     const [text, setText] = useState<string>('');
-    const [items, setItems] = useState<string[]>([]);
+    const [task, setTask] = useState<string[]>([]);
 
-    const clear = () => setItems([]);
+    const clear = () => setTask([]);
 
     const clearTask = (index: number) => {
         console.log('proba', index);
-        items.splice(index, 1);
-        setItems([...items]);
+        task.splice(index, 1);
+        let newListOfTasks=[...task];
+        setTask(newListOfTasks);
     };
 
     const submit = () =>
@@ -23,7 +24,7 @@ export default function EditScreenInfo() {
         {
             // item.push(text);
             // console.log('pageX', event.nativeEvent.pageX);
-            setItems([...items, text]);
+            setTask([...task, text]);
             setText('');
         };
 
@@ -60,7 +61,7 @@ export default function EditScreenInfo() {
                 />
             </View>
             <View style={styles.body}>
-                {items.map((task: string, index: number) => {
+                {task.map((task: string, index: number) => {
                     console.log('task, index', task, index);
 
                     return (
@@ -75,8 +76,8 @@ export default function EditScreenInfo() {
                         </View>
                     );
                 })}
-                {/* {items.map((value: string, index: number) => renderItem(value, index))} */}
-                {/* {items.map(renderItem)} syntactic sugar */}
+                {/* {task.map((value: string, index: number) => renderItem(value, index))} */}
+                {/* {task.map(renderItem)} syntactic sugar */}
 
                 <Pressable
                     style={styles.clear}
@@ -88,7 +89,7 @@ export default function EditScreenInfo() {
             </View>
             <View style={styles.footer}>
                 <Pressable
-                    style={[{ alignItems: 'flex-end' }]}
+                    style={styles.submitButton}
                     onPress={submit}
                     // onPress={(event) => submit(event)} // These 2 function calls are the same
                 >
@@ -103,6 +104,12 @@ export default function EditScreenInfo() {
 }
 
 const styles = StyleSheet.create({
+    submitButton: {
+        alignItems: 'flex-end' 
+
+    },
+
+
     itemButton: {
         borderWidth: 1,
         alignItems: 'center',
