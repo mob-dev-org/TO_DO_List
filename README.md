@@ -17,7 +17,7 @@ All of the changes by version can be found in [CHANGELOG](./CHANGELOG.md).
 
 <!-- ## Prerequisites -->
 
-- [Expo development environment on your machine](https://reactnative.dev/docs/environment-setup)
+-   [Expo development environment on your machine](https://reactnative.dev/docs/environment-setup)
 <!-- - [environments](./.env.example) - get in contact with someone from team (Ivan, Mateo or Mahir) who has access to this [drive folder](https://drive.google.com/drive/folders/1RZOoRQi2zdLyTOe-Mapj1r-hHw2xWTsM?usp=sharing), there you will find urls for both env's in the sheet
 ![Environment files](./__readme-images/environments.png 'Environment files') -->
 
@@ -55,8 +55,16 @@ yarn start
 
 (if you don't start it, one of the yarn ios/android commands will do it for you before installing the app to your device/simulator)
 
+Install development build
+
 ```shell
 yarn android
+```
+
+Install on device standalone app
+
+```shell
+yarn android:installToDevice
 ```
 
 ```shell
@@ -210,15 +218,15 @@ In addition we will follow [semantic versioning](https://semver.org/).
 
 This is so we can easily generate new changelog.
 
-- `Commiting`:
-  - `git commit`: This will run CLI interface to easily create commit messages that follow conventional commits logic
-  - `commitizen`: It will guide you and prompt you options to choose from so you follow the standard. At the end it will open the editor in terminal with your commit message. All you have to do is type in `:q` to exit and save
-- `Generate CHANGELOG.md` from your commits that follow conventional standard:
-  - Library used [commit-and-tag-version](https://www.npmjs.com/package/commit-and-tag-version) which is a fork of [standard-version](https://www.npmjs.com/package/standard-version):
-  - To bump up the version in package.json version of this repo and generate changelog:
-    - `yarn release:patch`: (0.0.X)
-    - `yarn release:minor`: (0.X.0)
-    - `yarn release:major`: (X.0.0)
+-   `Commiting`:
+    -   `git commit`: This will run CLI interface to easily create commit messages that follow conventional commits logic
+    -   `commitizen`: It will guide you and prompt you options to choose from so you follow the standard. At the end it will open the editor in terminal with your commit message. All you have to do is type in `:q` to exit and save
+-   `Generate CHANGELOG.md` from your commits that follow conventional standard:
+    -   Library used [commit-and-tag-version](https://www.npmjs.com/package/commit-and-tag-version) which is a fork of [standard-version](https://www.npmjs.com/package/standard-version):
+    -   To bump up the version in package.json version of this repo and generate changelog:
+        -   `yarn release:patch`: (0.0.X)
+        -   `yarn release:minor`: (0.X.0)
+        -   `yarn release:major`: (X.0.0)
 
 </details>
 <!-------------------------------------------------------------------->
@@ -227,26 +235,38 @@ This is so we can easily generate new changelog.
 <details>
 <summary>Generate CHANGELOG.md</summary>
 
-- `Generate CHANGELOG.md` from your commits that follow conventional standard:
-  - Library used [commit-and-tag-version](https://www.npmjs.com/package/commit-and-tag-version) which is a fork of [standard-version](https://www.npmjs.com/package/standard-version):
-  - To bump up the version in package.json version of this repo and generate changelog:
-    - `yarn release:patch`: (0.0.X)
-    - `yarn release:minor`: (0.X.0)
-    - `yarn release:major`: (X.0.0)
+-   `Generate CHANGELOG.md` from your commits that follow conventional standard:
+    -   Library used [commit-and-tag-version](https://www.npmjs.com/package/commit-and-tag-version) which is a fork of [standard-version](https://www.npmjs.com/package/standard-version):
+    -   To bump up the version in package.json version of this repo and generate changelog:
+        -   `yarn release:patch`: (0.0.X)
+        -   `yarn release:minor`: (0.X.0)
+        -   `yarn release:major`: (X.0.0)
 
 </details>
 
 <!-------------------------------------------------------------------->
 <!-------------------------------------------------------------------->
 
-<!-- <details>
+<details>
 <summary>Generate production version</summary>
 
-These are the steps to generate `.apk`, `.aab` and `.ipa` files
+<!-- These are the steps to generate `.apk`, `.aab` and `.ipa` files -->
 
 ### Android
 
-First you need to bump up the version of the app, so it does not have conflict with previous builds when uploading:
+Creates APK file in expo
+
+```shell
+yarn android:releaseToExpo
+```
+
+Creates AAB file
+
+```shell
+yarn android:prepareForGooglePlay
+```
+
+<!-- First you need to bump up the version of the app, so it does not have conflict with previous builds when uploading:
 
 Go to `android/app/build.gradle`
 
@@ -276,9 +296,9 @@ cd android && ENVFILE=../.env.production ./gradlew bundleRelease && cd ..
 
 For more info please go to https://reactnative.dev/docs/signed-apk-android
 
-![Environment files](./__readme-images/android-builds.png "Environment files")
+![Environment files](./__readme-images/android-builds.png "Environment files") -->
 
-### iOS
+<!-- ### iOS
 
 1. Go to the Xcode
 2. Select the schema and target, then bump up the build number, if you previously released some version to production, then update the version number as well
@@ -293,9 +313,9 @@ For more info please go to https://reactnative.dev/docs/signed-apk-android
 
 5. When archive is finished it will popup a window with that build, all you need to do is upload it, go next -> next until it is finished
 
-For more info please go to https://reactnative.dev/docs/publishing-to-app-store
+For more info please go to https://reactnative.dev/docs/publishing-to-app-store -->
 
-</details> -->
+</details>
 
 <!-------------------------------------------------------------------->
 <!-------------------------------------------------------------------->
