@@ -8,6 +8,7 @@ import {
     GestureResponderEvent,
     TextStyle,
 } from 'react-native';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useState } from 'react';
 import Colors from '../constants/Colors';
 import { MonoText } from './StyledText';
@@ -15,33 +16,43 @@ import { Text, View } from './Themed';
 import { AntDesign, Entypo, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 export default function EditScreenInfo() {
+    interface ToDo {
+        text?: string;
+        checked?: boolean;
+        edited?: boolean;
+        index?: number;
+    }
+    let task: ToDo;
+    const [edited, setEdit] = useState<boolean>(false);
     const [text, setText] = useState<string>('');
-    const [tasks, setTasks] = useState<string[]>([]);
     const [pressed, setPressed] = useState<boolean>(true);
-    const [checked, setChecked] = useState<boolean>(true);
+    const [checked, setChecked] = useState<boolean>(false);
+    const [tasks, setTasks] = useState<ToDo[]>([{ text: text, checked: checked, index: 1, edited: edited }]);
 
     const edit = (index: number) => {
-        setText(tasks[index]);
-        tasks[index] = text;
+        // setText(tasks[index]);
+        tasks[index].text = text;
+        console.log(tasks[index].text);
         setPressed(!pressed);
+        setEdit(!edited);
     };
 
     const clear = () => setTasks([]);
 
     const cleartasks = (index: number) => {
-        let newListOftaskss = [...tasks];
-        tasks.splice(index, 1);
-
-        setTasks(newListOftaskss);
+        let newListOftasks = [...tasks];
+        newListOftasks.splice(index, 1);
+        setTasks(newListOftasks);
     };
-    const checktasks = () => setChecked(!checked);
+    const checkTasks = (index: number) => {
+        let checkedTasks = [...tasks];
+        checkedTasks.slice(index, 4);
+    };
 
     const submit = () =>
         // event: GestureResponderEvent
         {
-            // item.push(text);
-            // console.log('pageX', event.nativeEvent.pageX);
-            setTasks([...tasks, text]);
+            setTasks([...tasks, tasks[0]]);
             setText('');
         };
 
@@ -78,11 +89,16 @@ export default function EditScreenInfo() {
                 />
             </View>
             <View style={styles.body}>
-                {tasks.map((tasks: string, index: number) => {
-                    console.log('tasks, index', tasks, index);
-
+                {tasks.map((task, index: number) => {
                     return (
                         <View style={styles.taskPerent}>
+                            <BouncyCheckbox
+                                style={styles.checkBox}
+                                // ref={(ref: any) => (bouncyCheckboxRef = ref)}
+                                isChecked={checked}
+                                disableBuiltInState
+                                onPress={() => checkTasks(index)}
+                            />
                             <Text
                                 style={[
                                     {
@@ -93,16 +109,13 @@ export default function EditScreenInfo() {
                                         textDecorationLine: checked ? 'line-through' : 'none',
                                     },
                                 ]}>
-                                {tasks}
+                                {text}
                             </Text>
-                            <Text style={[{ fontSize: 25, textAlign: 'left', flex: 1, padding: 10 }]}>{tasks}</Text>
+
                             <Pressable style={styles.itemButton} onPress={() => edit(index)} key={index}>
                                 <Entypo name={pressed ? 'edit' : 'save'} size={24} color="black" />
                             </Pressable>
-                            <Pressable
-                                style={styles.itemButton}
-                                onPress={() => checktasks()}
-                                onLongPress={() => cleartasks(index)}>
+                            <Pressable style={styles.itemButton} onPress={() => cleartasks(index)}>
                                 <MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />
                             </Pressable>
                         </View>
@@ -191,6 +204,9 @@ const styles = StyleSheet.create({
     page: {
         flex: 1,
         backgroundColor: 'blue',
+    },
+    checkBox: {
+        margin: 5,
     },
     clear: {
         width: 200,
