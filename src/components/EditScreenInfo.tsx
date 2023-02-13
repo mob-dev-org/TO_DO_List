@@ -1,61 +1,60 @@
 import * as WebBrowser from 'expo-web-browser';
-import { StyleSheet, TouchableOpacity, TextInput, Button, Pressable, GestureResponderEvent } from 'react-native';
+import {
+    StyleSheet,
+    TouchableOpacity,
+    TextInput,
+    Button,
+    Pressable,
+    GestureResponderEvent,
+    TextStyle,
+} from 'react-native';
 import { useState } from 'react';
 import Colors from '../constants/Colors';
 import { MonoText } from './StyledText';
 import { Text, View } from './Themed';
-import { AntDesign, Entypo, MaterialCommunityIcons, MaterialIcons  } from '@expo/vector-icons';
+import { AntDesign, Entypo, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 export default function EditScreenInfo() {
     const [text, setText] = useState<string>('');
-    const [task, setTask] = useState<string[]>([]);
+    const [tasks, setTasks] = useState<string[]>([]);
     const [pressed, setPressed] = useState<boolean>(true);
     const [checked, setChecked] = useState<boolean>(true);
 
-
-    type Style ={
-        fontSize: number,
-        textAlign: string,
-        flex: number,
-        padding:number,  
-        textDecorationLine:any,
-    }
-
-    const edit =(index:number)=> {
-        setText(task[index])
-        task[index]=text
-        setPressed(!pressed)
+    const edit = (index: number) => {
+        setText(tasks[index]);
+        tasks[index] = text;
+        setPressed(!pressed);
     };
 
-       
-    const clear = () => setTask([]);
+    const clear = () => setTasks([]);
 
-    const clearTask = (index: number) => {    
-        task.splice(index, 1);
-        let newListOfTasks=[...task];
-        setTask(newListOfTasks);
+    const cleartasks = (index: number) => {
+        let newListOftaskss = [...tasks];
+        tasks.splice(index, 1);
+
+        setTasks(newListOftaskss);
     };
-    const checkTask=()=>setChecked(!checked)
+    const checktasks = () => setChecked(!checked);
 
     const submit = () =>
         // event: GestureResponderEvent
         {
             // item.push(text);
             // console.log('pageX', event.nativeEvent.pageX);
-            setTask([...task, text]);
+            setTasks([...tasks, text]);
             setText('');
         };
 
-    // const renderItem = (task: string, index: number) => {
-    //     console.log('task, index', task, index);
+    // const renderItem = (tasks: string, index: number) => {
+    //     console.log('tasks, index', tasks, index);
 
     //     return (
-    //         <View style={styles.taskPerent}>
-    //             <Text style={styles.taskText}>{task}</Text>
+    //         <View style={styles.tasksPerent}>
+    //             <Text style={styles.tasksText}>{tasks}</Text>
     //             <Pressable style={styles.itemButton}>
     //                 <Entypo name="edit" size={24} color="black" />
     //             </Pressable>
-    //             <Pressable style={styles.itemButton} onPress={() => clearTask(index)}>
+    //             <Pressable style={styles.itemButton} onPress={() => cleartasks(index)}>
     //                 <MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />
     //             </Pressable>
     //         </View>
@@ -79,24 +78,38 @@ export default function EditScreenInfo() {
                 />
             </View>
             <View style={styles.body}>
-                {task.map((task: string, index: number) => {
-                    console.log('task, index', task, index);
+                {tasks.map((tasks: string, index: number) => {
+                    console.log('tasks, index', tasks, index);
 
                     return (
                         <View style={styles.taskPerent}>
-                            {/* <Text style:Style={[{fontSize: 25,textAlign: 'left', flex: 1,padding: 10,textDecorationLine:checked?"line-through":" "}]}>{task}</Text> */}
-                            <Text style={[{fontSize: 25,textAlign: 'left', flex: 1,padding: 10,}]}>{task}</Text>
-                            <Pressable style={styles.itemButton} onPress={()=>edit(index)} key={index}>
-                                <Entypo name={pressed? "edit" : "save"} size={24} color="black" />
+                            <Text
+                                style={[
+                                    {
+                                        fontSize: 25,
+                                        textAlign: 'left',
+                                        flex: 1,
+                                        padding: 10,
+                                        textDecorationLine: checked ? 'line-through' : 'none',
+                                    },
+                                ]}>
+                                {tasks}
+                            </Text>
+                            <Text style={[{ fontSize: 25, textAlign: 'left', flex: 1, padding: 10 }]}>{tasks}</Text>
+                            <Pressable style={styles.itemButton} onPress={() => edit(index)} key={index}>
+                                <Entypo name={pressed ? 'edit' : 'save'} size={24} color="black" />
                             </Pressable>
-                            <Pressable style={styles.itemButton} onPress={() => checkTask()} onLongPress={() => clearTask(index)}>
+                            <Pressable
+                                style={styles.itemButton}
+                                onPress={() => checktasks()}
+                                onLongPress={() => cleartasks(index)}>
                                 <MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />
                             </Pressable>
                         </View>
                     );
                 })}
-                {/* {task.map((value: string, index: number) => renderItem(value, index))} */}
-                {/* {task.map(renderItem)} syntactic sugar */}
+                {/* {tasks.map((value: string, index: number) => renderItem(value, index))} */}
+                {/* {tasks.map(renderItem)} syntactic sugar */}
 
                 <Pressable
                     style={styles.clear}
@@ -124,10 +137,8 @@ export default function EditScreenInfo() {
 
 const styles = StyleSheet.create({
     submitButton: {
-        alignItems: 'flex-end' 
-
+        alignItems: 'flex-end',
     },
-
 
     itemButton: {
         borderWidth: 1,
@@ -166,7 +177,7 @@ const styles = StyleSheet.create({
         margin: 20,
         padding: 10,
     },
-    // taskText: {
+    // tasksText: {
     //     fontSize: 25,
     //     textAlign: 'left',
     //     flex: 1,
