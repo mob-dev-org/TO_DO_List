@@ -75,6 +75,8 @@ What happends when you start editing new todo item,
 when old one is being edited at the same time ?
 
 disable other editing buttons -> try
+try to disable all buttons(global), except the one that is curently edited
+
 `, () => {
     expect(true).toBeTruthy();
 });
