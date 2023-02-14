@@ -16,25 +16,45 @@ import { Text, View } from './Themed';
 import { AntDesign, Entypo, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 export default function EditScreenInfo() {
-    interface ToDo {
-        text?: string;
-        checked?: boolean;
-        edited?: boolean;
+    type ToDo = {
+        text: string;
+        checking?: boolean;
+        editing?: boolean;
         index?: number;
-    }
+    };
     let task: ToDo;
     const [edited, setEdit] = useState<boolean>(false);
     const [text, setText] = useState<string>('');
-    const [pressed, setPressed] = useState<boolean>(true);
     const [checked, setChecked] = useState<boolean>(false);
-    const [tasks, setTasks] = useState<ToDo[]>([{ text: text, checked: checked, index: 1, edited: edited }]);
+    const [tasks, setTasks] = useState<ToDo[]>([]);
 
     const edit = (index: number) => {
-        // setText(tasks[index]);
-        tasks[index].text = text;
-        console.log(tasks[index].text);
-        setPressed(!pressed);
+        if (text === '') {
+            setText(tasks[index].text);
+        } else {
+            tasks[index].text = text;
+            setText('');
+        }
+
+        const newArrayWithEditingChanged = tasks.map((toDoItem, indexFromItem) => {
+            if (indexFromItem === index) {
+                return {
+                    ...toDoItem,
+                    // text: text + 'editovani',
+                    editing: !edited,
+                };
+            } else {
+                return toDoItem;
+            }
+        });
+        // const newArrayWithEditingChanged2 = tasks.map((toDoItem, indexFromItem) =>
+        //     index === indexFromItem ? { ...toDoItem, editing: true } : toDoItem,
+        // ); - kraci ispravan nacin
+        // console.log('arrayOfTextsFromTasks', arrayOfTextsFromTasks);
+
+        setTasks(newArrayWithEditingChanged);
         setEdit(!edited);
+        console.log(tasks[index].text);
     };
 
     const clear = () => setTasks([]);
@@ -44,15 +64,27 @@ export default function EditScreenInfo() {
         newListOftasks.splice(index, 1);
         setTasks(newListOftasks);
     };
+
     const checkTasks = (index: number) => {
-        let checkedTasks = [...tasks];
-        checkedTasks.slice(index, 4);
+        const newArray = tasks.map((itemFromList, itemIndex) => {
+            if (itemIndex === index) {
+                return {
+                    ...itemFromList,
+                    checking: checked,
+                };
+            } else {
+                return itemFromList;
+            }
+        });
+        setTasks(newArray);
+        setChecked(!checked);
     };
 
     const submit = () =>
         // event: GestureResponderEvent
         {
-            setTasks([...tasks, tasks[0]]);
+            const newArray = [...tasks, { text: text }];
+            setTasks(newArray);
             setText('');
         };
 
@@ -88,32 +120,35 @@ export default function EditScreenInfo() {
                     }}
                 />
             </View>
+
             <View style={styles.body}>
-                {tasks.map((task, index: number) => {
+                {tasks.map((toDoItem, index: number) => {
+                    console.log('toDoItem', toDoItem);
                     return (
                         <View style={styles.taskPerent}>
                             <BouncyCheckbox
                                 style={styles.checkBox}
                                 // ref={(ref: any) => (bouncyCheckboxRef = ref)}
-                                isChecked={checked}
+                                isChecked={toDoItem.checking}
                                 disableBuiltInState
                                 onPress={() => checkTasks(index)}
                             />
                             <Text
                                 style={[
-                                    {
-                                        fontSize: 25,
-                                        textAlign: 'left',
-                                        flex: 1,
-                                        padding: 10,
-                                        textDecorationLine: checked ? 'line-through' : 'none',
+                                    // styles.text,
+                                    toDoItem.checking && {
+                                        textDecorationLine: 'line-through',
                                     },
+                                    // {
+                                    //     textDecorationLine: checked ? 'line-through' : 'none',
+                                    // },
+                                    styles.text2,
                                 ]}>
-                                {text}
+                                {toDoItem.text}
                             </Text>
 
                             <Pressable style={styles.itemButton} onPress={() => edit(index)} key={index}>
-                                <Entypo name={pressed ? 'edit' : 'save'} size={24} color="black" />
+                                <Entypo name={!toDoItem.editing ? 'edit' : 'save'} size={24} color="black" />
                             </Pressable>
                             <Pressable style={styles.itemButton} onPress={() => cleartasks(index)}>
                                 <MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />
@@ -184,10 +219,17 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 40,
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
+        color: '#000',
         textAlign: 'right',
-        color: 'white',
+        // color: 'white',
         margin: 20,
+        padding: 10,
+    },
+    text2: {
+        fontSize: 25,
+        textAlign: 'left',
+        flex: 1,
         padding: 10,
     },
     // tasksText: {
