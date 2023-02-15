@@ -83,6 +83,6 @@ try to disable all buttons(global), except the one that is curently edited
 
 // -------------------- CHECK --------------------
 
-it(`needs to have function checking on tap circle button `, () => {
+it(`needs to mark circle button and cross the text on tap for finished tasks`, () => {
     expect(true).toBeTruthy();
 });
