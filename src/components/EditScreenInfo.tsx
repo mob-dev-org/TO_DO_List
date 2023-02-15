@@ -82,7 +82,7 @@ export default function EditScreenInfo() {
 
     const submit = () => {
         const newArray = [[text], ...tasks];
-        setTasks(newArray);
+        // setTasks(newArray);
         setText('');
     };
 
