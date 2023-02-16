@@ -17,12 +17,14 @@ type ToDo = {
     completed: boolean;
     editing: boolean;
     index: number;
+    disableing: boolean;
 };
 export default function EditScreenInfo() {
     // let task: ToDo;
     const [edited, setEdit] = useState<boolean>(false);
     const [text, setText] = useState<string>('');
     const [checked, setChecked] = useState<boolean>(false);
+    const [disable, setDisable] = useState<boolean>(false);
     const [tasks, setTasks] = useState<ToDo[]>([]);
 
     const edit = (index: number, malik: boolean) => {
@@ -33,19 +35,21 @@ export default function EditScreenInfo() {
             setText('');
         }
 
-        const newArrayWithEditingChanged = tasks.map((toDoItem, indexFromItem) => {
-            if (indexFromItem === index) {
+        const newArrayWithEditingChanged = tasks.map((toDoItem, indexFromItem, disableing) => {
+            if (indexFromItem === index && toDoItem.editing === false) {
                 return {
                     ...toDoItem,
                     // text: text + 'editovani',
                     editing: !malik,
-                    malik,
+                    [tasks[index].text]: text,
+                    disableing: false,
                 };
                 // console.log(edited);
             } else {
                 return {
                     ...toDoItem,
                     editing: false,
+                    disableing: true,
                 };
             }
         });
@@ -59,14 +63,14 @@ export default function EditScreenInfo() {
 
     const clear = () => setTasks([]);
 
-    const clearTasks = (index: number) => {
-        let newListOfTasks = [...tasks];
+    const removeTask = (index: number) => {
+        let newListOfTasks: ToDo[] = [...tasks];
         newListOfTasks.splice(index, 1);
         setTasks(newListOfTasks);
     };
 
     const checkTasks = (index: number, checked: boolean) => {
-        const newArray = tasks.map((itemFromList, itemIndex) => {
+        const newArray: ToDo[] = tasks.map((itemFromList, itemIndex) => {
             if (itemIndex === index) {
                 return {
                     ...itemFromList,
@@ -80,10 +84,14 @@ export default function EditScreenInfo() {
         setChecked(!checked);
     };
 
-    const submit = () => {
-        const newArray = [[text], ...tasks];
-        // setTasks(newArray);
+    const submit = (index: number) => {
+        const newArray: ToDo[] = [
+            { text: text, completed: checked, editing: edited, index: index, disableing: disable },
+            ...tasks,
+        ];
+        setTasks(newArray);
         setText('');
+        console.log(...newArray);
     };
 
     return (
@@ -105,15 +113,13 @@ export default function EditScreenInfo() {
 
             <View style={styles.body}>
                 {tasks.map((toDoItem, index: number) => {
-                    // console.log('toDoItem', toDoItem);
                     return (
                         <View style={styles.taskPerent}>
                             <BouncyCheckbox
                                 style={styles.checkBox}
-                                // ref={(ref: any) => (bouncyCheckboxRef = ref)}
                                 isChecked={toDoItem.completed}
                                 disableBuiltInState
-                                onPress={() => checkTasks(index, checked)}
+                                onPress={() => checkTasks(index, toDoItem.completed)}
                             />
                             <Text
                                 style={[
@@ -133,9 +139,13 @@ export default function EditScreenInfo() {
                                 style={styles.itemButton}
                                 onPress={() => edit(index, toDoItem.editing)}
                                 key={index}>
-                                <Entypo name={!toDoItem.editing ? 'edit' : 'save'} size={24} color="black" />
+                                {!toDoItem.disableing ? (
+                                    <Entypo name={!toDoItem.editing ? 'edit' : 'save'} size={24} color="black" />
+                                ) : (
+                                    ''
+                                )}
                             </Pressable>
-                            <Pressable style={styles.itemButton} onPress={() => clearTasks(index)}>
+                            <Pressable style={styles.itemButton} onPress={() => removeTask(index)}>
                                 <MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />
                             </Pressable>
                         </View>
@@ -153,11 +163,7 @@ export default function EditScreenInfo() {
                 </Pressable>
             </View>
             <View style={styles.footer}>
-                <Pressable
-                    style={styles.submitButton}
-                    onPress={submit}
-                    // onPress={(event) => submit(event)} // These 2 function calls are the same
-                >
+                <Pressable style={styles.submitButton} onPress={() => submit(1)}>
                     <Text style={styles.button}>
                         Add
                         <AntDesign name="pluscircleo" size={24} color="black" />
