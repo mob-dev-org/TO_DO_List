@@ -27,7 +27,7 @@ export default function EditScreenInfo() {
     const [disable, setDisable] = useState<boolean>(false);
     const [tasks, setTasks] = useState<ToDo[]>([]);
 
-    const edit = (index: number, malik: boolean) => {
+    const edit = (index: number, editing: boolean,disableing:boolean) => {
         if (text === '') {
             setText(tasks[index].text);
         } else {
@@ -35,21 +35,23 @@ export default function EditScreenInfo() {
             setText('');
         }
 
-        const newArrayWithEditingChanged = tasks.map((toDoItem, indexFromItem, disableing) => {
-            if (indexFromItem === index && toDoItem.editing === false) {
+        const newArrayWithEditingChanged = tasks.map((toDoItem, indexFromItem, ) => {
+            if (indexFromItem === index && editing===false ) {
                 return {
                     ...toDoItem,
                     // text: text + 'editovani',
-                    editing: !malik,
+                    // disableing:!editing,
+                   
                     [tasks[index].text]: text,
-                    disableing: false,
+                    editing: !editing,
                 };
-                // console.log(edited);
+                 console.log(toDoItem.editing);
             } else {
                 return {
                     ...toDoItem,
-                    editing: false,
-                    disableing: true,
+                     disableing: !editing,
+                     editing:!editing,
+                    
                 };
             }
         });
@@ -58,6 +60,7 @@ export default function EditScreenInfo() {
         // ); - kraci ispravan nacin
         console.log('arrayOfTextsFromTasks', newArrayWithEditingChanged);
         setEdit(!edited);
+        setDisable(!disable);
         setTasks(newArrayWithEditingChanged);
     };
 
@@ -137,16 +140,16 @@ export default function EditScreenInfo() {
 
                             <Pressable
                                 style={styles.itemButton}
-                                onPress={() => edit(index, toDoItem.editing)}
+                                onPress={() => edit(index, toDoItem.editing,disable )}
                                 key={index}>
                                 {!toDoItem.disableing ? (
-                                    <Entypo name={!toDoItem.editing ? 'edit' : 'save'} size={24} color="black" />
+                                    <Entypo name={!toDoItem.editing ? 'edit' : 'save'} size={24} color="red" />
                                 ) : (
                                     ''
                                 )}
                             </Pressable>
                             <Pressable style={styles.itemButton} onPress={() => removeTask(index)}>
-                                <MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />
+                                <MaterialCommunityIcons name="close-box-multiple" size={24} color="red" />
                             </Pressable>
                         </View>
                     );
@@ -210,10 +213,9 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 40,
-        // backgroundColor: 'white',
+        backgroundColor: 'blue',
         color: '#000',
         textAlign: 'right',
-        // color: 'white',
         margin: 20,
         padding: 10,
     },
