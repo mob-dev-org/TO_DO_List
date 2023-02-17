@@ -70,13 +70,7 @@ do it by replacing existing text in item with new text`, () => {
     expect(true).toBeTruthy();
 });
 
-it(`
-What happends when you start editing new todo item,
-when old one is being edited at the same time ?
-
-disable other editing buttons -> try
-try to disable all buttons(global), except the one that is curently edited
-
+it(`when we click edit button to eddit task, other edit buttons disappear
 `, () => {
     expect(true).toBeTruthy();
 });
@@ -84,5 +78,9 @@ try to disable all buttons(global), except the one that is curently edited
 // -------------------- CHECK --------------------
 
 it(`needs to mark circle button and cross the text on tap for finished tasks`, () => {
+    expect(true).toBeTruthy();
+});
+
+it(`when you finish editing text it needs to have save button insted of add `, () => {
     expect(true).toBeTruthy();
 });

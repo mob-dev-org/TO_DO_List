@@ -1,13 +1,4 @@
-import * as WebBrowser from 'expo-web-browser';
-import {
-    StyleSheet,
-    TouchableOpacity,
-    TextInput,
-    Button,
-    Pressable,
-    GestureResponderEvent,
-    TextStyle,
-} from 'react-native';
+import { StyleSheet, TextInput, Pressable } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useState } from 'react';
 import { Text, View } from './Themed';
@@ -26,8 +17,9 @@ export default function EditScreenInfo() {
     const [checked, setChecked] = useState<boolean>(false);
     const [disable, setDisable] = useState<boolean>(false);
     const [tasks, setTasks] = useState<ToDo[]>([]);
+    const [disableAdd, setdisableAdd] = useState<boolean>(true);
 
-    const edit = (index: number, editing: boolean,disableing:boolean) => {
+    const edit = (index: number, editing: boolean) => {
         if (text === '') {
             setText(tasks[index].text);
         } else {
@@ -35,36 +27,68 @@ export default function EditScreenInfo() {
             setText('');
         }
 
-        const newArrayWithEditingChanged = tasks.map((toDoItem, indexFromItem, ) => {
-            if (indexFromItem === index && editing===false ) {
-                return {
-                    ...toDoItem,
-                    // text: text + 'editovani',
-                    // disableing:!editing,
-                   
-                    [tasks[index].text]: text,
-                    editing: !editing,
-                };
-                 console.log(toDoItem.editing);
-            } else {
-                return {
-                    ...toDoItem,
-                     disableing: !editing,
-                     editing:!editing,
-                    
-                };
-            }
-        });
+        // const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem, indexFromItem) => {
+        //     if (indexFromItem === index && editing === false) {
+        //         return {
+        //             ...toDoItem,
+        //             // text : text
+        //             // text: toDoItem.text,
+        //             // completed: toDoItem.completed,
+        //             // editing: toDoItem.editing,
+        //             // index: toDoItem.index,
+        //             // disableing: toDoItem.disableing,
+
+        //             // text: text,
+        //             text,
+        //         };
+        //     } else {
+        //         return { ...toDoItem };
+        //     }
+        // });
+        // console.log('novi niz', newArrayWithEditingChanged);
+
+        const newArrayWithEditingChanged = tasks.map((toDoItem, indexFromItem) =>
+            indexFromItem === index && editing === false
+                ? {
+                      ...toDoItem,
+                      // text: text + 'editovani',
+                      // disableing:!editing,
+                      [tasks[index].text]: text,
+                      editing: !editing,
+                  }
+                : {
+                      ...toDoItem,
+                      disableing: !editing,
+                      editing: !editing,
+                  },
+        );
         // const newArrayWithEditingChanged2 = tasks.map((toDoItem, indexFromItem) =>
         //     index === indexFromItem ? { ...toDoItem, editing: true } : toDoItem,
         // ); - kraci ispravan nacin
-        console.log('arrayOfTextsFromTasks', newArrayWithEditingChanged);
         setEdit(!edited);
         setDisable(!disable);
         setTasks(newArrayWithEditingChanged);
+        setdisableAdd(!disableAdd);
     };
 
     const clear = () => setTasks([]);
+    const save = () => {
+        // const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem) =>
+        //     toDoItem.editing === true ? { ...toDoItem, text: text } : toDoItem,
+        // );
+        const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem) => {
+            if (toDoItem.editing === true) {
+                return {
+                    ...toDoItem,
+                    text: text,
+                };
+            } else {
+                return toDoItem;
+            }
+        });
+        setTasks(newArrayWithEditingChanged);
+        console.log('bajro', tasks);
+    };
 
     const removeTask = (index: number) => {
         let newListOfTasks: ToDo[] = [...tasks];
@@ -114,7 +138,7 @@ export default function EditScreenInfo() {
                 />
             </View>
 
-            <View style={styles.body}>
+            <View style={styles.body} darkColor="rgba(255,255,255,0.1)">
                 {tasks.map((toDoItem, index: number) => {
                     return (
                         <View style={styles.taskPerent}>
@@ -138,18 +162,16 @@ export default function EditScreenInfo() {
                                 {toDoItem.text}
                             </Text>
 
-                            <Pressable
-                                style={styles.itemButton}
-                                onPress={() => edit(index, toDoItem.editing,disable )}
-                                key={index}>
-                                {!toDoItem.disableing ? (
-                                    <Entypo name={!toDoItem.editing ? 'edit' : 'save'} size={24} color="red" />
-                                ) : (
-                                    ''
-                                )}
-                            </Pressable>
+                            {!toDoItem.disableing ? (
+                                <Pressable
+                                    style={styles.itemButton}
+                                    onPress={() => edit(index, toDoItem.editing)}
+                                    key={index}>
+                                    <Entypo name={!toDoItem.editing ? 'edit' : 'save'} size={20} color="red" />
+                                </Pressable>
+                            ) : null}
                             <Pressable style={styles.itemButton} onPress={() => removeTask(index)}>
-                                <MaterialCommunityIcons name="close-box-multiple" size={24} color="red" />
+                                <MaterialCommunityIcons name="close-box-multiple" size={20} color="red" />
                             </Pressable>
                         </View>
                     );
@@ -162,16 +184,25 @@ export default function EditScreenInfo() {
                     onPress={clear} // syntactic sugar
                 >
                     <Text style={styles.ClearText}>Clear</Text>
-                    <MaterialCommunityIcons name="delete-alert" size={44} color="black" />
+                    <MaterialCommunityIcons name="delete-alert" size={44} color="red" />
                 </Pressable>
             </View>
             <View style={styles.footer}>
-                <Pressable style={styles.submitButton} onPress={() => submit(1)}>
-                    <Text style={styles.button}>
-                        Add
-                        <AntDesign name="pluscircleo" size={24} color="black" />
-                    </Text>
-                </Pressable>
+                {disableAdd ? (
+                    <Pressable style={styles.submitButton} onPress={() => submit(1)}>
+                        <Text style={styles.button}>
+                            Add
+                            <AntDesign name="pluscircleo" size={24} color="#fff" />
+                        </Text>
+                    </Pressable>
+                ) : (
+                    <Pressable style={styles.submitButton} onPress={save}>
+                        <Text style={styles.button}>
+                            Save
+                            <AntDesign name="pluscircleo" size={24} color="#fff" />
+                        </Text>
+                    </Pressable>
+                )}
             </View>
         </View>
     );
@@ -183,23 +214,23 @@ const styles = StyleSheet.create({
     },
 
     itemButton: {
-        borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 16,
-        marginLeft: 8,
+        paddingHorizontal: 4,
+        marginRight: 5,
     },
 
     button: {
         fontSize: 45,
-        backgroundColor: '#37bbbe',
+        color: '#fff',
+        backgroundColor: '#103030ee',
         width: '100%',
         padding: 8,
         textAlign: 'center',
         alignItems: 'center',
     },
     textInput: {
-        width: 350,
+        width: '90%',
         height: 35,
         borderRadius: 20,
         backgroundColor: 'white',
@@ -209,12 +240,15 @@ const styles = StyleSheet.create({
     },
     taskPerent: {
         margin: 8,
+        borderRadius: 10,
         flexDirection: 'row',
+        backgroundColor: 'black',
     },
     text: {
         fontSize: 40,
-        backgroundColor: 'blue',
-        color: '#000',
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        color: '#fff',
         textAlign: 'right',
         margin: 20,
         padding: 10,
@@ -222,40 +256,34 @@ const styles = StyleSheet.create({
     text2: {
         fontSize: 25,
         textAlign: 'left',
+        borderRadius: 20,
         flex: 1,
         padding: 10,
+        color: '#fff',
     },
-    // tasksText: {
-    //     fontSize: 25,
-    //     textAlign: 'left',
-    //     flex: 1,
-    //     padding: 10,
-    //     textDecorationLine:checked?"line-through":""
-    // },
     header: {
-        backgroundColor: '#fa1',
+        backgroundColor: '#103030ee',
         // alignItems: 'center',
     },
     page: {
         flex: 1,
-        backgroundColor: 'blue',
     },
     checkBox: {
         margin: 5,
     },
     clear: {
         width: 200,
-        color: 'red',
+        color: 'white',
         borderRadius: 32,
         flexDirection: 'row',
         borderWidth: 1,
-        borderColor: 'black',
+        borderColor: 'white',
         justifyContent: 'center',
         marginTop: 8,
     },
     body: {
         flex: 25,
-        backgroundColor: '#cf0',
+        backgroundColor: '#103030ee',
         alignItems: 'center',
     },
     footer: {
@@ -264,5 +292,6 @@ const styles = StyleSheet.create({
     ClearText: {
         fontSize: 32,
         fontWeight: 'bold',
+        color: '#fff',
     },
 });
