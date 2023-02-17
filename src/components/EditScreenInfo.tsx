@@ -16,7 +16,9 @@ export default function EditScreenInfo() {
     const [text, setText] = useState<string>('');
     const [checked, setChecked] = useState<boolean>(false);
     const [disable, setDisable] = useState<boolean>(false);
-    const [tasks, setTasks] = useState<ToDo[]>([]);
+    const [tasks, setTasks] = useState<ToDo[]>([
+        { text: 'a', completed: false, editing: false, index: 0, disableing: false },
+    ]);
     const [disableAdd, setdisableAdd] = useState<boolean>(true);
 
     const edit = (index: number, editing: boolean) => {
@@ -77,7 +79,7 @@ export default function EditScreenInfo() {
         //     toDoItem.editing === true ? { ...toDoItem, text: text } : toDoItem,
         // );
         const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem) => {
-            if (toDoItem.editing === true) {
+            if (toDoItem.disableing === false) {
                 return {
                     ...toDoItem,
                     text: text,
@@ -86,6 +88,7 @@ export default function EditScreenInfo() {
                 return toDoItem;
             }
         });
+        setdisableAdd(!disableAdd);
         setTasks(newArrayWithEditingChanged);
         console.log('bajro', tasks);
     };
@@ -94,6 +97,8 @@ export default function EditScreenInfo() {
         let newListOfTasks: ToDo[] = [...tasks];
         newListOfTasks.splice(index, 1);
         setTasks(newListOfTasks);
+
+        // tasks[index].disableing = false;
     };
 
     const checkTasks = (index: number, checked: boolean) => {
