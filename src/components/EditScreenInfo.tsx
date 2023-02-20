@@ -18,6 +18,8 @@ export default function EditScreenInfo() {
     const [disable, setDisable] = useState<boolean>(false);
     const [tasks, setTasks] = useState<ToDo[]>([
         { text: 'a', completed: false, editing: false, index: 0, disableing: false },
+        { text: 'b', completed: false, editing: false, index: 0, disableing: false },
+        { text: 'c', completed: false, editing: false, index: 0, disableing: false },
     ]);
     const [disableAdd, setdisableAdd] = useState<boolean>(true);
 
@@ -29,32 +31,11 @@ export default function EditScreenInfo() {
             setText('');
         }
 
-        // const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem, indexFromItem) => {
-        //     if (indexFromItem === index && editing === false) {
-        //         return {
-        //             ...toDoItem,
-        //             // text : text
-        //             // text: toDoItem.text,
-        //             // completed: toDoItem.completed,
-        //             // editing: toDoItem.editing,
-        //             // index: toDoItem.index,
-        //             // disableing: toDoItem.disableing,
-
-        //             // text: text,
-        //             text,
-        //         };
-        //     } else {
-        //         return { ...toDoItem };
-        //     }
-        // });
-        // console.log('novi niz', newArrayWithEditingChanged);
-
         const newArrayWithEditingChanged = tasks.map((toDoItem, indexFromItem) =>
             indexFromItem === index && editing === false
                 ? {
                       ...toDoItem,
-                      // text: text + 'editovani',
-                      // disableing:!editing,
+
                       [tasks[index].text]: text,
                       editing: !editing,
                   }
@@ -64,9 +45,7 @@ export default function EditScreenInfo() {
                       editing: !editing,
                   },
         );
-        // const newArrayWithEditingChanged2 = tasks.map((toDoItem, indexFromItem) =>
-        //     index === indexFromItem ? { ...toDoItem, editing: true } : toDoItem,
-        // ); - kraci ispravan nacin
+
         setEdit(!edited);
         setDisable(!disable);
         setTasks(newArrayWithEditingChanged);
@@ -75,30 +54,40 @@ export default function EditScreenInfo() {
 
     const clear = () => setTasks([]);
     const save = () => {
-        // const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem) =>
-        //     toDoItem.editing === true ? { ...toDoItem, text: text } : toDoItem,
-        // );
         const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem) => {
             if (toDoItem.disableing === false) {
                 return {
                     ...toDoItem,
                     text: text,
+                    editing: false,
                 };
             } else {
-                return toDoItem;
+                return {
+                    ...toDoItem,
+                    disableing: false,
+                    editing: false,
+                };
             }
         });
         setdisableAdd(!disableAdd);
         setTasks(newArrayWithEditingChanged);
         console.log('bajro', tasks);
+        setText('');
     };
 
     const removeTask = (index: number) => {
         let newListOfTasks: ToDo[] = [...tasks];
-        newListOfTasks.splice(index, 1);
-        setTasks(newListOfTasks);
-
-        // tasks[index].disableing = false;
+        const newArrayWithOneRemoved = newListOfTasks.map((taskFromTasks, i) => {
+            if (index === i && taskFromTasks.disableing === true && taskFromTasks.editing === false) {
+                newListOfTasks.splice(index, 1);
+            } else {
+                newListOfTasks.splice(index, 1);
+                taskFromTasks;
+                taskFromTasks.disableing = false;
+                taskFromTasks.editing = true;
+            }
+            setTasks(newListOfTasks);
+        });
     };
 
     const checkTasks = (index: number, checked: boolean) => {
@@ -133,11 +122,7 @@ export default function EditScreenInfo() {
                     style={styles.textInput}
                     placeholder="Write something"
                     value={text}
-                    // onChange={(e) => setText(e.nativeEvent.text)}
-                    // onChangeText={setText} ispravan - najkraca verzije
-                    // onChangeText={(text) => setText(text)} ispravan - srednje kratka verzija
                     onChangeText={(text) => {
-                        // console.log(text);
                         setText(text); // ispravan najduza verzija
                     }}
                 />
@@ -181,8 +166,6 @@ export default function EditScreenInfo() {
                         </View>
                     );
                 })}
-                {/* {tasks.map((value: string, index: number) => renderItem(value, index))} */}
-                {/* {tasks.map(renderItem)} syntactic sugar */}
 
                 <Pressable
                     style={styles.clear}
