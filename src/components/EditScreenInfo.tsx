@@ -1,66 +1,130 @@
-import * as WebBrowser from 'expo-web-browser';
-import { StyleSheet, TouchableOpacity, TextInput, Button, Pressable, GestureResponderEvent } from 'react-native';
+import { StyleSheet, TextInput, Pressable } from 'react-native';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useState } from 'react';
-import Colors from '../constants/Colors';
-import { MonoText } from './StyledText';
 import { Text, View } from './Themed';
-import { AntDesign, Entypo, MaterialCommunityIcons, MaterialIcons  } from '@expo/vector-icons';
-
+import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+type ToDo = {
+    text: string;
+    completed: boolean;
+    editing: boolean;
+    index: number;
+    disableing: boolean;
+};
 export default function EditScreenInfo() {
+    // let task: ToDo;
+    const [edited, setEdit] = useState<boolean>(false);
     const [text, setText] = useState<string>('');
-    const [task, setTask] = useState<string[]>([]);
-    const [pressed, setPressed] = useState<boolean>(true);
-    const [checked, setChecked] = useState<boolean>(true);
+    const [checked, setChecked] = useState<boolean>(false);
+    const [disable, setDisable] = useState<boolean>(false);
+    const [tasks, setTasks] = useState<ToDo[]>([
+        { text: 'a', completed: false, editing: false, index: 0, disableing: false },
+    ]);
+    const [disableAdd, setdisableAdd] = useState<boolean>(true);
 
-
-    type Style ={
-        fontSize: number,
-        textAlign: string,
-        flex: number,
-        padding:number,  
-        textDecorationLine:any,
-    }
-
-    const edit =(index:number)=> {
-        setText(task[index])
-        task[index]=text
-        setPressed(!pressed)
-    };
-
-       
-    const clear = () => setTask([]);
-
-    const clearTask = (index: number) => {    
-        task.splice(index, 1);
-        let newListOfTasks=[...task];
-        setTask(newListOfTasks);
-    };
-    const checkTask=()=>setChecked(!checked)
-
-    const submit = () =>
-        // event: GestureResponderEvent
-        {
-            // item.push(text);
-            // console.log('pageX', event.nativeEvent.pageX);
-            setTask([...task, text]);
+    const edit = (index: number, editing: boolean) => {
+        if (text === '') {
+            setText(tasks[index].text);
+        } else {
+            tasks[index].text = text;
             setText('');
-        };
+        }
 
-    // const renderItem = (task: string, index: number) => {
-    //     console.log('task, index', task, index);
+        // const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem, indexFromItem) => {
+        //     if (indexFromItem === index && editing === false) {
+        //         return {
+        //             ...toDoItem,
+        //             // text : text
+        //             // text: toDoItem.text,
+        //             // completed: toDoItem.completed,
+        //             // editing: toDoItem.editing,
+        //             // index: toDoItem.index,
+        //             // disableing: toDoItem.disableing,
 
-    //     return (
-    //         <View style={styles.taskPerent}>
-    //             <Text style={styles.taskText}>{task}</Text>
-    //             <Pressable style={styles.itemButton}>
-    //                 <Entypo name="edit" size={24} color="black" />
-    //             </Pressable>
-    //             <Pressable style={styles.itemButton} onPress={() => clearTask(index)}>
-    //                 <MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />
-    //             </Pressable>
-    //         </View>
-    //     );
-    // };
+        //             // text: text,
+        //             text,
+        //         };
+        //     } else {
+        //         return { ...toDoItem };
+        //     }
+        // });
+        // console.log('novi niz', newArrayWithEditingChanged);
+
+        const newArrayWithEditingChanged = tasks.map((toDoItem, indexFromItem) =>
+            indexFromItem === index && editing === false
+                ? {
+                      ...toDoItem,
+                      // text: text + 'editovani',
+                      // disableing:!editing,
+                      [tasks[index].text]: text,
+                      editing: !editing,
+                  }
+                : {
+                      ...toDoItem,
+                      disableing: !editing,
+                      editing: !editing,
+                  },
+        );
+        // const newArrayWithEditingChanged2 = tasks.map((toDoItem, indexFromItem) =>
+        //     index === indexFromItem ? { ...toDoItem, editing: true } : toDoItem,
+        // ); - kraci ispravan nacin
+        setEdit(!edited);
+        setDisable(!disable);
+        setTasks(newArrayWithEditingChanged);
+        setdisableAdd(!disableAdd);
+    };
+
+    const clear = () => setTasks([]);
+    const save = () => {
+        // const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem) =>
+        //     toDoItem.editing === true ? { ...toDoItem, text: text } : toDoItem,
+        // );
+        const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem) => {
+            if (toDoItem.disableing === false) {
+                return {
+                    ...toDoItem,
+                    text: text,
+                };
+            } else {
+                return toDoItem;
+            }
+        });
+        setdisableAdd(!disableAdd);
+        setTasks(newArrayWithEditingChanged);
+        console.log('bajro', tasks);
+    };
+
+    const removeTask = (index: number) => {
+        let newListOfTasks: ToDo[] = [...tasks];
+        newListOfTasks.splice(index, 1);
+        setTasks(newListOfTasks);
+
+        // tasks[index].disableing = false;
+    };
+
+    const checkTasks = (index: number, checked: boolean) => {
+        const newArray: ToDo[] = tasks.map((itemFromList, itemIndex) => {
+            if (itemIndex === index) {
+                return {
+                    ...itemFromList,
+                    completed: !checked,
+                };
+            } else {
+                return itemFromList;
+            }
+        });
+        setTasks(newArray);
+        setChecked(!checked);
+    };
+
+    const submit = (index: number) => {
+        const newArray: ToDo[] = [
+            { text: text, completed: checked, editing: edited, index: index, disableing: disable },
+            ...tasks,
+        ];
+        setTasks(newArray);
+        setText('');
+        console.log(...newArray);
+    };
 
     return (
         <View style={styles.page}>
@@ -78,45 +142,72 @@ export default function EditScreenInfo() {
                     }}
                 />
             </View>
-            <View style={styles.body}>
-                {task.map((task: string, index: number) => {
-                    console.log('task, index', task, index);
 
+            <View style={styles.body} darkColor="rgba(255,255,255,0.1)">
+                {tasks.map((toDoItem, index: number) => {
                     return (
                         <View style={styles.taskPerent}>
-                            {/* <Text style:Style={[{fontSize: 25,textAlign: 'left', flex: 1,padding: 10,textDecorationLine:checked?"line-through":" "}]}>{task}</Text> */}
-                            <Text style={[{fontSize: 25,textAlign: 'left', flex: 1,padding: 10,}]}>{task}</Text>
-                            <Pressable style={styles.itemButton} onPress={()=>edit(index)} key={index}>
-                                <Entypo name={pressed? "edit" : "save"} size={24} color="black" />
-                            </Pressable>
-                            <Pressable style={styles.itemButton} onPress={() => checkTask()} onLongPress={() => clearTask(index)}>
-                                <MaterialCommunityIcons name="close-box-multiple" size={24} color="black" />
+                            <BouncyCheckbox
+                                style={styles.checkBox}
+                                isChecked={toDoItem.completed}
+                                disableBuiltInState
+                                onPress={() => checkTasks(index, toDoItem.completed)}
+                            />
+                            <Text
+                                style={[
+                                    // styles.text,
+                                    toDoItem.completed && {
+                                        textDecorationLine: 'line-through',
+                                    },
+                                    // {
+                                    //     textDecorationLine: checked ? 'line-through' : 'none',
+                                    // },
+                                    styles.text2,
+                                ]}>
+                                {toDoItem.text}
+                            </Text>
+
+                            {!toDoItem.disableing ? (
+                                <Pressable
+                                    style={styles.itemButton}
+                                    onPress={() => edit(index, toDoItem.editing)}
+                                    key={index}>
+                                    <Entypo name={!toDoItem.editing ? 'edit' : 'save'} size={20} color="red" />
+                                </Pressable>
+                            ) : null}
+                            <Pressable style={styles.itemButton} onPress={() => removeTask(index)}>
+                                <MaterialCommunityIcons name="close-box-multiple" size={20} color="red" />
                             </Pressable>
                         </View>
                     );
                 })}
-                {/* {task.map((value: string, index: number) => renderItem(value, index))} */}
-                {/* {task.map(renderItem)} syntactic sugar */}
+                {/* {tasks.map((value: string, index: number) => renderItem(value, index))} */}
+                {/* {tasks.map(renderItem)} syntactic sugar */}
 
                 <Pressable
                     style={styles.clear}
                     onPress={clear} // syntactic sugar
                 >
                     <Text style={styles.ClearText}>Clear</Text>
-                    <MaterialCommunityIcons name="delete-alert" size={44} color="black" />
+                    <MaterialCommunityIcons name="delete-alert" size={44} color="red" />
                 </Pressable>
             </View>
             <View style={styles.footer}>
-                <Pressable
-                    style={styles.submitButton}
-                    onPress={submit}
-                    // onPress={(event) => submit(event)} // These 2 function calls are the same
-                >
-                    <Text style={styles.button}>
-                        Add
-                        <AntDesign name="pluscircleo" size={24} color="black" />
-                    </Text>
-                </Pressable>
+                {disableAdd ? (
+                    <Pressable style={styles.submitButton} onPress={() => submit(1)}>
+                        <Text style={styles.button}>
+                            Add
+                            <AntDesign name="pluscircleo" size={24} color="#fff" />
+                        </Text>
+                    </Pressable>
+                ) : (
+                    <Pressable style={styles.submitButton} onPress={save}>
+                        <Text style={styles.button}>
+                            Save
+                            <AntDesign name="pluscircleo" size={24} color="#fff" />
+                        </Text>
+                    </Pressable>
+                )}
             </View>
         </View>
     );
@@ -124,29 +215,27 @@ export default function EditScreenInfo() {
 
 const styles = StyleSheet.create({
     submitButton: {
-        alignItems: 'flex-end' 
-
+        alignItems: 'flex-end',
     },
 
-
     itemButton: {
-        borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 16,
-        marginLeft: 8,
+        paddingHorizontal: 4,
+        marginRight: 5,
     },
 
     button: {
         fontSize: 45,
-        backgroundColor: '#37bbbe',
+        color: '#fff',
+        backgroundColor: '#103030ee',
         width: '100%',
         padding: 8,
         textAlign: 'center',
         alignItems: 'center',
     },
     textInput: {
-        width: 350,
+        width: '90%',
         height: 35,
         borderRadius: 20,
         backgroundColor: 'white',
@@ -156,44 +245,50 @@ const styles = StyleSheet.create({
     },
     taskPerent: {
         margin: 8,
+        borderRadius: 10,
         flexDirection: 'row',
+        backgroundColor: 'black',
     },
     text: {
         fontSize: 40,
-        backgroundColor: 'white',
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        color: '#fff',
         textAlign: 'right',
-        color: 'white',
         margin: 20,
         padding: 10,
     },
-    // taskText: {
-    //     fontSize: 25,
-    //     textAlign: 'left',
-    //     flex: 1,
-    //     padding: 10,
-    //     textDecorationLine:checked?"line-through":""
-    // },
+    text2: {
+        fontSize: 25,
+        textAlign: 'left',
+        borderRadius: 20,
+        flex: 1,
+        padding: 10,
+        color: '#fff',
+    },
     header: {
-        backgroundColor: '#fa1',
+        backgroundColor: '#103030ee',
         // alignItems: 'center',
     },
     page: {
         flex: 1,
-        backgroundColor: 'blue',
+    },
+    checkBox: {
+        margin: 5,
     },
     clear: {
         width: 200,
-        color: 'red',
+        color: 'white',
         borderRadius: 32,
         flexDirection: 'row',
         borderWidth: 1,
-        borderColor: 'black',
+        borderColor: 'white',
         justifyContent: 'center',
         marginTop: 8,
     },
     body: {
         flex: 25,
-        backgroundColor: '#cf0',
+        backgroundColor: '#103030ee',
         alignItems: 'center',
     },
     footer: {
@@ -202,5 +297,6 @@ const styles = StyleSheet.create({
     ClearText: {
         fontSize: 32,
         fontWeight: 'bold',
+        color: '#fff',
     },
 });
