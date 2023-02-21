@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, Pressable } from 'react-native';
+import { StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useState } from 'react';
 import { Text, View } from './Themed';
@@ -11,19 +11,19 @@ type ToDo = {
     disableing: boolean;
 };
 export default function EditScreenInfo() {
+    // let task: ToDo;
+    const [edited, setEdit] = useState<boolean>(false);
     const [text, setText] = useState<string>('');
     const [checked, setChecked] = useState<boolean>(false);
     const [disable, setDisable] = useState<boolean>(false);
     const [tasks, setTasks] = useState<ToDo[]>([
-        { text: 'prvi', completed: false, editing: false, index: 0, disableing: false },
-        { text: 'drugi', completed: false, editing: false, index: 0, disableing: false },
-        { text: 'treci', completed: false, editing: false, index: 0, disableing: false },
-        { text: 'cetvrti', completed: false, editing: false, index: 0, disableing: false },
-        { text: 'peti', completed: false, editing: false, index: 0, disableing: false },
+        { text: 'a', completed: false, editing: false, index: 0, disableing: false },
+        { text: 'b', completed: false, editing: false, index: 0, disableing: false },
+        { text: 'c', completed: false, editing: false, index: 0, disableing: false },
     ]);
     const [disableAdd, setdisableAdd] = useState<boolean>(true);
 
-    const edit = (index: number) => {
+    const edit = (index: number, editing: boolean) => {
         if (text === '') {
             setText(tasks[index].text);
         } else {
@@ -31,40 +31,32 @@ export default function EditScreenInfo() {
             setText('');
         }
 
-        const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem, indexFromItem) => {
-            if (indexFromItem === index) {
-                return {
-                    completed: toDoItem.completed,
-                    index: toDoItem.index,
-                    editing: true,
-                    disableing: toDoItem.disableing,
-                    text: text,
-                };
-            } else {
-                return {
-                    text: toDoItem.text,
-                    completed: toDoItem.completed,
-                    index: toDoItem.index,
-                    disableing: true,
-                    editing: toDoItem.editing,
-                };
-            }
-        });
+        const newArrayWithEditingChanged = tasks.map((toDoItem, indexFromItem) =>
+            indexFromItem === index && editing === false
+                ? {
+                      ...toDoItem,
 
-        console.log('testiranje', newArrayWithEditingChanged);
+                      [tasks[index].text]: text,
+                      editing: !editing,
+                  }
+                : {
+                      ...toDoItem,
+                      disableing: !editing,
+                      editing: !editing,
+                  },
+        );
 
+        setEdit(!edited);
         setDisable(!disable);
         setTasks(newArrayWithEditingChanged);
         setdisableAdd(!disableAdd);
     };
 
-    const clear = () => {
-        setTasks([]), setdisableAdd(true);
-    };
+    const clear = () => {setTasks([]), setdisableAdd(true)};
 
     const save = () => {
         const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem) => {
-            if (toDoItem.disableing === false && toDoItem.editing === true) {
+            if (toDoItem.disableing === false) {
                 return {
                     ...toDoItem,
                     text: text,
@@ -90,13 +82,14 @@ export default function EditScreenInfo() {
             if (index === i && taskFromTasks.disableing === true && taskFromTasks.editing === true) {
                 newListOfTasks.splice(index, 1);
                 taskFromTasks.disableing = false;
-                taskFromTasks.editing = false;
-            } else if (index === i && taskFromTasks.editing === false) {
-                newListOfTasks.splice(index, 1);
-            } else {
-                newListOfTasks;
-            }
+                taskFromTasks.editing = false;}
+
+             else if (index === i && taskFromTasks.editing === false){ 
+            newListOfTasks.splice(index, 1);}
+            
+            else{newListOfTasks }
             setTasks(newListOfTasks);
+            // setdisableAdd(true);
         });
     };
 
@@ -117,7 +110,7 @@ export default function EditScreenInfo() {
 
     const submit = (index: number) => {
         const newArray: ToDo[] = [
-            { text: text, completed: false, editing: false, index: index, disableing: false },
+            { text: text, completed: false, editing:false, index: index, disableing: false },
             ...tasks,
         ];
         setTasks(newArray);
@@ -137,7 +130,7 @@ export default function EditScreenInfo() {
                     }}
                 />
             </View>
-
+                <ScrollView>
             <View style={styles.body} darkColor="rgba(255,255,255,0.1)">
                 {tasks.map((toDoItem, index: number) => {
                     return (
@@ -150,10 +143,13 @@ export default function EditScreenInfo() {
                             />
                             <Text
                                 style={[
+                                    // styles.text,
                                     toDoItem.completed && {
                                         textDecorationLine: 'line-through',
                                     },
-
+                                    // {
+                                    //     textDecorationLine: checked ? 'line-through' : 'none',
+                                    // },
                                     styles.text2,
                                 ]}>
                                 {toDoItem.text}
@@ -162,16 +158,7 @@ export default function EditScreenInfo() {
                             {!toDoItem.disableing ? (
                                 <Pressable
                                     style={styles.itemButton}
-                                    // onPress={() => edit(index, toDoItem.editing)}
-                                    // onPress={save}
-                                    // onPress={()=> save()}
-                                    onPress={() => {
-                                        if (toDoItem.editing === true) {
-                                            save();
-                                        } else {
-                                            edit(index);
-                                        }
-                                    }}
+                                    onPress={() => edit(index, toDoItem.editing)}
                                     key={index}>
                                     <Entypo name={!toDoItem.editing ? 'edit' : 'save'} size={20} color="red" />
                                 </Pressable>
@@ -183,14 +170,16 @@ export default function EditScreenInfo() {
                     );
                 })}
 
-                <Pressable
+            </View>
+            </ScrollView>
+            
+            <Pressable
                     style={styles.clear}
                     onPress={clear} // syntactic sugar
                 >
                     <Text style={styles.ClearText}>Clear</Text>
                     <MaterialCommunityIcons name="delete-alert" size={44} color="red" />
                 </Pressable>
-            </View>
             <View style={styles.footer}>
                 {disableAdd ? (
                     <Pressable style={styles.submitButton} onPress={() => submit(1)}>
@@ -271,6 +260,7 @@ const styles = StyleSheet.create({
     },
     page: {
         flex: 1,
+        backgroundColor: '#103030ee',
     },
     checkBox: {
         margin: 5,
@@ -283,7 +273,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'white',
         justifyContent: 'center',
+        marginLeft:"22%",
         marginTop: 8,
+        marginBottom:16,
     },
     body: {
         flex: 25,
