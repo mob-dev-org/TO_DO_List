@@ -11,19 +11,19 @@ type ToDo = {
     disableing: boolean;
 };
 export default function EditScreenInfo() {
+    // let task: ToDo;
+    const [edited, setEdit] = useState<boolean>(false);
     const [text, setText] = useState<string>('');
     const [checked, setChecked] = useState<boolean>(false);
     const [disable, setDisable] = useState<boolean>(false);
     const [tasks, setTasks] = useState<ToDo[]>([
-        { text: 'prvi', completed: false, editing: false, index: 0, disableing: false },
-        { text: 'drugi', completed: false, editing: false, index: 0, disableing: false },
-        { text: 'treci', completed: false, editing: false, index: 0, disableing: false },
-        { text: 'cetvrti', completed: false, editing: false, index: 0, disableing: false },
-        { text: 'peti', completed: false, editing: false, index: 0, disableing: false },
+        { text: 'a', completed: false, editing: false, index: 0, disableing: false },
+        { text: 'b', completed: false, editing: false, index: 0, disableing: false },
+        { text: 'c', completed: false, editing: false, index: 0, disableing: false },
     ]);
     const [disableAdd, setdisableAdd] = useState<boolean>(true);
 
-    const edit = (index: number) => {
+    const edit = (index: number, editing: boolean) => {
         if (text === '') {
             setText(tasks[index].text);
         } else {
@@ -31,28 +31,22 @@ export default function EditScreenInfo() {
             setText('');
         }
 
-        const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem, indexFromItem) => {
-            if (indexFromItem === index) {
-                return {
-                    completed: toDoItem.completed,
-                    index: toDoItem.index,
-                    editing: true,
-                    disableing: toDoItem.disableing,
-                    text: text,
-                };
-            } else {
-                return {
-                    text: toDoItem.text,
-                    completed: toDoItem.completed,
-                    index: toDoItem.index,
-                    disableing: true,
-                    editing: toDoItem.editing,
-                };
-            }
-        });
+        const newArrayWithEditingChanged = tasks.map((toDoItem, indexFromItem) =>
+            indexFromItem === index && editing === false
+                ? {
+                      ...toDoItem,
 
-        console.log('testiranje', newArrayWithEditingChanged);
+                      [tasks[index].text]: text,
+                      editing: !editing,
+                  }
+                : {
+                      ...toDoItem,
+                      disableing: !editing,
+                      editing: !editing,
+                  },
+        );
 
+        setEdit(!edited);
         setDisable(!disable);
         setTasks(newArrayWithEditingChanged);
         setdisableAdd(!disableAdd);
@@ -64,7 +58,7 @@ export default function EditScreenInfo() {
 
     const save = () => {
         const newArrayWithEditingChanged: ToDo[] = tasks.map((toDoItem) => {
-            if (toDoItem.disableing === false && toDoItem.editing === true) {
+            if (toDoItem.disableing === false) {
                 return {
                     ...toDoItem,
                     text: text,
@@ -97,6 +91,7 @@ export default function EditScreenInfo() {
                 newListOfTasks;
             }
             setTasks(newListOfTasks);
+            // setdisableAdd(true);
         });
     };
 
@@ -137,62 +132,55 @@ export default function EditScreenInfo() {
                     }}
                 />
             </View>
-                <ScrollView>
-            <View style={styles.body} darkColor="rgba(255,255,255,0.1)">
-                {tasks.map((toDoItem, index: number) => {
-                    return (
-                        <View style={styles.taskPerent}>
-                            <BouncyCheckbox
-                                style={styles.checkBox}
-                                isChecked={toDoItem.completed}
-                                disableBuiltInState
-                                onPress={() => checkTasks(index, toDoItem.completed)}
-                            />
-                            <Text
-                                style={[
-                                    toDoItem.completed && {
-                                        textDecorationLine: 'line-through',
-                                    },
+            <ScrollView>
+                <View style={styles.body} darkColor="rgba(255,255,255,0.1)">
+                    {tasks.map((toDoItem, index: number) => {
+                        return (
+                            <View style={styles.taskPerent}>
+                                <BouncyCheckbox
+                                    style={styles.checkBox}
+                                    isChecked={toDoItem.completed}
+                                    disableBuiltInState
+                                    onPress={() => checkTasks(index, toDoItem.completed)}
+                                />
+                                <Text
+                                    style={[
+                                        // styles.text,
+                                        toDoItem.completed && {
+                                            textDecorationLine: 'line-through',
+                                        },
+                                        // {
+                                        //     textDecorationLine: checked ? 'line-through' : 'none',
+                                        // },
+                                        styles.text2,
+                                    ]}>
+                                    {toDoItem.text}
+                                </Text>
 
-                                    styles.text2,
-                                ]}>
-                                {toDoItem.text}
-                            </Text>
-
-                            {!toDoItem.disableing ? (
-                                <Pressable
-                                    style={styles.itemButton}
-                                    // onPress={() => edit(index, toDoItem.editing)}
-                                    // onPress={save}
-                                    // onPress={()=> save()}
-                                    onPress={() => {
-                                        if (toDoItem.editing === true) {
-                                            save();
-                                        } else {
-                                            edit(index);
-                                        }
-                                    }}
-                                    key={index}>
-                                    <Entypo name={!toDoItem.editing ? 'edit' : 'save'} size={20} color="red" />
+                                {!toDoItem.disableing ? (
+                                    <Pressable
+                                        style={styles.itemButton}
+                                        onPress={() => edit(index, toDoItem.editing)}
+                                        key={index}>
+                                        <Entypo name={!toDoItem.editing ? 'edit' : 'save'} size={20} color="red" />
+                                    </Pressable>
+                                ) : null}
+                                <Pressable style={styles.itemButton} onPress={() => removeTask(index)}>
+                                    <MaterialCommunityIcons name="close-box-multiple" size={20} color="red" />
                                 </Pressable>
-                            ) : null}
-                            <Pressable style={styles.itemButton} onPress={() => removeTask(index)}>
-                                <MaterialCommunityIcons name="close-box-multiple" size={20} color="red" />
-                            </Pressable>
-                        </View>
-                    );
-                })}
-
-            </View>
+                            </View>
+                        );
+                    })}
+                </View>
             </ScrollView>
-            
+
             <Pressable
-                    style={styles.clear}
-                    onPress={clear} // syntactic sugar
-                >
-                    <Text style={styles.ClearText}>Clear</Text>
-                    <MaterialCommunityIcons name="delete-alert" size={44} color="red" />
-                </Pressable>
+                style={styles.clear}
+                onPress={clear} // syntactic sugar
+            >
+                <Text style={styles.ClearText}>Clear</Text>
+                <MaterialCommunityIcons name="delete-alert" size={44} color="red" />
+            </Pressable>
             <View style={styles.footer}>
                 {disableAdd ? (
                     <Pressable style={styles.submitButton} onPress={() => submit(1)}>
@@ -286,9 +274,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'white',
         justifyContent: 'center',
-        marginLeft:"22%",
+        marginLeft: '22%',
         marginTop: 8,
-        marginBottom:16,
+        marginBottom: 16,
     },
     body: {
         flex: 25,
