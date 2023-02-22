@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, Pressable } from 'react-native';
+import { StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useState } from 'react';
 import { Text, View } from './Themed';
@@ -137,7 +137,7 @@ export default function EditScreenInfo() {
                     }}
                 />
             </View>
-
+                <ScrollView>
             <View style={styles.body} darkColor="rgba(255,255,255,0.1)">
                 {tasks.map((toDoItem, index: number) => {
                     return (
@@ -183,14 +183,16 @@ export default function EditScreenInfo() {
                     );
                 })}
 
-                <Pressable
+            </View>
+            </ScrollView>
+            
+            <Pressable
                     style={styles.clear}
                     onPress={clear} // syntactic sugar
                 >
                     <Text style={styles.ClearText}>Clear</Text>
                     <MaterialCommunityIcons name="delete-alert" size={44} color="red" />
                 </Pressable>
-            </View>
             <View style={styles.footer}>
                 {disableAdd ? (
                     <Pressable style={styles.submitButton} onPress={() => submit(1)}>
@@ -271,6 +273,7 @@ const styles = StyleSheet.create({
     },
     page: {
         flex: 1,
+        backgroundColor: '#103030ee',
     },
     checkBox: {
         margin: 5,
@@ -283,7 +286,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'white',
         justifyContent: 'center',
+        marginLeft:"22%",
         marginTop: 8,
+        marginBottom:16,
     },
     body: {
         flex: 25,
